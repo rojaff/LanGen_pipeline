@@ -1,6 +1,6 @@
 # landgenomic_analysis
 
-These scripts were developed to perform landscape genomic analysis including: filtering SNPs dataset (1), population genetic structure (2), generate climatic data (3), fine-scale spatial genetic structure (4), select potential candidate loci using pcadapt (5), RDA with Mahalanobis distance (6) and LFMM2 (7), comparing results with Venn Diagram (8), run RDA using only the candidate SNPs (9), run sPCA to make adaptive genetic maps (10) and predict genetic variation using RDA (11).
+These scripts were developed to perform landscape genomic analysis including: SNPs dataset filtering (1), population genetic structure (2), climatic data selection (3), fine-scale spatial genetic structure (4), identification of potential candidate loci using three approaches, pcadapt (5), RDA with Mahalanobis distance (6) and LFMM2 (7), result comparison with Venn Diagram (8), RDA using only the candidate SNPs (9), adaptive genetic maps using sPCA (10) and genetic variation predictions using RDA (11).
 
 We suggest to run the scripts in the following order, because new VCF files will be used in the subsequent steps:
 
