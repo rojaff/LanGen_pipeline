@@ -1,27 +1,15 @@
-# landgenomic_analysis
+# LanGen_pipeline
 
-These scripts were developed to perform landscape genomic analysis including: SNPs dataset filtering (1), population genetic structure (2), climatic data selection (3), fine-scale spatial genetic structure (4), identification of potential candidate loci using three approaches, pcadapt (5), RDA with Mahalanobis distance (6) and LFMM2 (7), result comparison with Venn Diagram (8), RDA using only the candidate SNPs (9), adaptive genetic maps using sPCA (10) and genetic variation predictions using RDA (11).
+These suit of scripts were developed to perform the following analysis: 
 
-We suggest to run the scripts in the following order, because new VCF files will be used in the subsequent steps:
-
-1 - Filtering
-
-2 - Population Structure
-
-3 - Climatic Data
-
-4 - LOESS
-
-5- PCAdapt
-
-6 - GEA_RDA_Mahalanobis
-
-7 - LFMM2
-
-8 - Venn Diagram
-
-9 - RDA_final
-
-10 - sPCA
-
-11 - RDA_predict
+1) SNPs dataset filtering 
+2) Assessment of population genetic structure 
+3) Selection of environmental data 
+4) Assessment of fine-scale spatial genetic structure 
+5) Identification of outlier (adaptive) loci using pcadapt 
+6) Identification of genotype-environment associations using Redundancy Analyses (RDA) & Mahalanobis distances 
+7) Identification of genotype-environment associations using Latent Factor Mixed Models (LFMM2) 
+8) Plotting detections with a Venn Diagram 
+9) Visual assessment of genotype-environment associations using Redundancy Analyses (RDA) on the candidate loci
+10) Mapping adaptive genetic variation using Spatial Principal Components (sPCA)
+11) Predicting adaptive genotypes from RDA models and environmental data
