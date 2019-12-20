@@ -102,14 +102,10 @@ head(cbind(mySpca2$ls,espaco))
 write.csv(cbind(mySpca2$ls,espaco), "adapt_var_mapping/sPCA_adaptation_maps/spca_axis_all_candidate_loci_ipomoea.csv")
 
 
-## Make Adaptation Maps using QGIS      
+## Make Adaptation Maps using QGIS 3.4      
 
-#1. Open QGIS
-#2. Go to "Add a delimited text file" and open the file with spca axes
-#3. Save the opened file as a shapefile
-#4. Interpolate each axis separately: Raster>Analysis>Grid(Interpolation)
-#5. At the Grid(Interpolation) window, a) select the shapefile with spca axes, 
-    # b)select "Z field" and choose one of the axis, c) select the "extension"
-#6. Repeat the previous steps to each axis
-#7. Combine the three interpolated axis raster in a rgb raster using Raster>Micelaneous>Mosaic. 
-    # a) Open the three interpolated axis raster, b) select "put each file in a separatly band".
+#1. Open QGIS and install the Processing plugin
+#2. Load the file containing the three sPCA axes scores as "Delimited Text" and save it as a shapefile
+#3. Interpolate each axis separately using the "IDW interpolation" tool from the Interpolation option in the Processing Toolbox
+#4. Create an RGB composite raster combining the three created rasters, using Raster>Micelaneous>Merge and clicking the option "put each file in a separatly band"
+#5. Customize maps as desired
