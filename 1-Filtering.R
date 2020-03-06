@@ -216,10 +216,10 @@ Missingind.df[Missingind.df$Missing_ind>70,] # define threshold for individual m
 ## Remove individuals with large amounts of missing (set to max 50% missing)
 
 indtokeep <- Missingind.df[Missingind.df$Missing_ind <= 70,]
-snps_lowindmiss <- Subset(snps_fil_ld, samples = indtokeep$ID)
+snps_lowindmiss <- Subset(snps_fil_ldF, samples = indtokeep$ID)
 snps_lowindmiss@meta
 VCFsummary(snps_unind)
-VCFsummary(snps_lowindmiss) ## 115 individuals and 13604 SNPs.
+VCFsummary(snps_lowindmiss)
 
 
 #### Save filtered vcf
