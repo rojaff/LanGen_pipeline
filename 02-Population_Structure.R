@@ -1,19 +1,42 @@
-#This code was made to estimate population genetic diversity and carry out 
-#clustering analysis.
+###############################################################################
+####################### VALE INSTITUTE OF TECHNOLOGY ##########################
+############### LABORATORIO DE GENETICA DA PAISAGEM - GENPAI ##################
+###############################################################################
 
+
+###############################################################################
+##### COMBINING GENOTYPE, PHENOTYPE, AND ENVIRONMENTAL DATA TO DELINEATE ######
+######  SITE-AJUSTED PROVENANCE STRATEGIES FOR ECOLOGICAL RESTORATION #########
+###############################################################################
+### AUTHORED BY: CAROLINA S. CARVALHO, BRENNA R. FORESTER, SIMONE K. MITRE, ###
+########## RONNIE ALVES, VERA L. IMPERATRIZ-FONSECA, SILVIO J. RAMOS, #########
+##### LUCIANA C. RESENDE-MOREIRA, JOSÉ 0. SIQUEIRA, LEONARDO C. TREVELIN, #####
+############# CECILIO F. CALDEIRA, MARKUS GASTAUER, RODOLFO JAFFÉ #############
+###############################################################################
+
+
+#------------------------------------------------------------------------------
+#                               PRE-ANALYSIS 
+#------------------------------------------------------------------------------
+
+##1. GOALS FOR THIS STEP:
+#A. ESTIMATE POPULATION GENETIC DIVERSITY
+#B. ESTIMATE POPULATION STRUCTURE CARRING OUT CLUSTERING ANALYSES
+
+##2. REMOVE ANY OBJECT OR FUNCTION IN THE ENVIRONMENT:
 rm(list=ls())
 
-#loading packages and functions
-
+##3. INSTALL AND LOAD THE PACKAGES
 library(r2vcftools)
+library(LEA)
 library(tess3r) 
-#devtools::install_github("bcm-uga/TESS3_encho_sen")
 library(seqinr)
-library("adegenet")
-library("vcfR")
-#aBiocManager::install("SNPRelate")
+library(adegenet)
+library(vcfR)
+library(SNPRelate)
+library(dartR)
 
-
+##4. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
   Nid <- nrow(snps@meta)
   Nsnps <- length(snps@site_id)
@@ -161,22 +184,32 @@ ManPlot <- function(adj.p.values, candidates, title){
 }
 
 
-#Here we will estimate several genetic diversity measure per population.
-#For genetic diversity measures we are using neutral dataset.
-# In our example file there is only one population.
+##5. INPUTS FOR THIS STEP:
+#A. THE FILE ".VCF" CLEANED AFTER FILTERING STEP 1.
+#B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
+#A. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
 
+
+#--------------------------------------------------------------------------------------
+#                     Estimate the Genetic Diversity per Population 
+#--------------------------------------------------------------------------------------
+
+# In our example file there is only one population
+
+## Load
 snps_fil_ldF <-  vcfLink("vcf/ipomoea_filtered_ld_hwe_test2.vcf", overwriteID=T)
-
 VCFsummary(snps_fil_ldF)  ## 115 individuals and 13604 SNPs.
 
-##Overall genetic diversity
-
+## Overall genetic diversity
 Overall <- GenDiv(snps_fil_ldF)
-
 write.table(Overall, file="adapt_var_mapping/Pop_structure/Diversity_Overall_ipomoea.txt", quote=F, sep="/t")
 
 
-##Now we will carry out a population assignment analysis using snmf.
+#--------------------------------------------------------------------------------------
+#                   Remove SNPs under selection using Fst Outlier approach 
+#--------------------------------------------------------------------------------------           
+              
+##First we will carry out a population assignment analysis using sNMF to estimate number of K.
 
 ### Convert to geno object:
 # You need to specify the output file. It will automatically subset the vcf file and assign it as a new object.
@@ -186,13 +219,13 @@ VCFsummary(snps_fil_ldF) ## 115 individuals and 13604 SNPs.
 ### Run SNMF (LEA) using different alpha
 ## Create different folders for each alpha (1, 10, 100, 500) and copy the GENO file in each folder
 
-#project_snmf1 = snmf("adapt_var_mapping/Pop_structure/Alpha1/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 1, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
-#project_snmf2 = snmf("adapt_var_mapping/Pop_structure/Alpha10/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 10, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
-#project_snmf3 = snmf("adapt_var_mapping/Pop_structure/Alpha100/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 100, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
-#project_snmf4 = snmf("adapt_var_mapping/Pop_structure/Alpha500/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 500, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf1 = snmf("adapt_var_mapping/Pop_structure/Alpha1/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 1, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf2 = snmf("adapt_var_mapping/Pop_structure/Alpha10/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 10, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf3 = snmf("adapt_var_mapping/Pop_structure/Alpha100/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 100, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf4 = snmf("adapt_var_mapping/Pop_structure/Alpha500/ipomoea_filtered_ld_hw.geno", K = 1:10, rep = 10, alpha = 500, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
 
 ## To load the SNMF projects in a new R session (after quitting R), use:  project = load.snmfProject("Alpha1/Icavalcantei_filtered.snmfProject")
-##This allows you to save time because you do not need to run SNMF again!
+##This allows you to save time because you do not need to run sNMF again!
 project1 = load.snmfProject("adapt_var_mapping/Pop_structure/Alpha1/ipomoea_filtered_ld_hw.snmfProject")
 project2 = load.snmfProject("adapt_var_mapping/Pop_structure/Alpha10/ipomoea_filtered_ld_hw.snmfProject")
 project3 = load.snmfProject("adapt_var_mapping/Pop_structure/Alpha100/ipomoea_filtered_ld_hw.snmfProject")
@@ -211,7 +244,6 @@ plot(project3, lwd = 5, col = "red", pch=1)
 plot(project4, lwd = 5, col = "red", pch=1)
 
 ##Select optimal K value
-
 optimal_K = 1
 
 ## Bar plot of best K
@@ -250,15 +282,13 @@ LEA::barchart(project4, K = optimal_K, run = best4, border = NA, space = 0, col 
          xlab = "Individuals", ylab = "Ancestry proportions", main = "Ancestry matrix") -> bp
 axis(1, at = 1:length(bp$order),labels = bp$order, las=1,cex.axis = .3)
 
-###Select best run (lowest cross-entropy)
+## Select best run (lowest cross-entropy)
 Best.run(nrep=10, optimalK=1, p1=project1, p2=project2, p3=project3, p4=project4)
 
-#### Final Barplot
-
+## Final Barplot
 barplotK(Qfile=project3, Pop = 1, Run_B = 6)
 
-####################### Add population IDS to VCF file
-
+## Add population IDS to VCF file
 Qmat <- Q(project3, run=6, K=optimal_K)
 
 popIds = apply(Qmat, 1, which.max)
@@ -267,44 +297,36 @@ snps_fil_ldF@meta
 
 ## Save new vcf file and pop ID file
 Save(snps_fil_ldF, "vcf/ipomoea_filtered_ld_hw_pops_snmf.vcf") 
-
-
-## Until now we are carried out clustering analysis using snps dataset without
-#effectively remove snps under selection. Next we will use Fst outlier
-#approach to select spns under selection and remove them to build a neutral
-#loci dataset.
-
+              
 ## Compute the FST statistics using best run
-
 project=project3
 run=6
 K=2
 
 FST = fst(project, run, K) # you need at least 2 populations for a population-based test, so K>1.
 
-# Compute the GIF
+## Compute the GIF
 lambda <- GIF(project, run, K, fst.values=FST)
 lambda
 
-# Compute adjusted p-values from the combined z-scores and plot histogram of p-values
+## Compute adjusted p-values from the combined z-scores and plot histogram of p-values
 n = dim(Q(project, run, K))[1]
 z.scores = sqrt(FST*(n-K)/(1-FST))
 adj.p.values = pchisq(z.scores^2/lambda, df = K-1, lower = FALSE)
 hist(adj.p.values, col = "red")
 
-# Test different lambda values and plot histogram of p-values
+## Test different lambda values and plot histogram of p-values
 adj.p.values = pchisq(z.scores^2/1.5, df = K-1, lower = FALSE) ## it is the best, but is still strange
 hist(adj.p.values, col = "green")
 
-###Candidate loci
+## Candidate loci
 ## FDR control: Benjamini-Hochberg at level q
 C_fst <- candidates(alpha=0.05, adj.p.values)
 
-###Manhatan plot
+## Manhatan plot
 ManPlot(adj.p.values, C_fst,"Fst")
 
-
-########### Exclude candidate FST outlier
+## Exclude candidate FST outlier
 
 snps_fil_ldF_candidate <- Subset(snps_fil_ldF, sites=C_fst)
 snps_fil_ldF_candidate@site_id ## These are all the candidate SNPs
@@ -322,59 +344,58 @@ length(snps_fil_ldF@site_id)-length(C_fst)
 length(snps_fil_ldF_neutral@site_id)
 
 ## Save neutral snp dataset
-
 Save(snps_fil_ldF_neutral, "vcf/ipomoea_filtered_ld_hw_neutral.vcf")
 
-#Now we will carry out population assignment again, but using only neutral
-#loci dataset.
+              
+#--------------------------------------------------------------------------------------
+#                  Population Assignment Analysis using sNMF 
+#-------------------------------------------------------------------------------------- 
+              
+#Now we will carry out population assignment again, but using only neutral loci dataset.
 
-#Load
+## Load
 snps_fil_ldF_neutral <- vcfLink("vcf/ipomoea_filtered_ld_hw_neutral.vcf") 
 
-### Convert to geno object:
-# You need to specify the output file. It will automatically subset the vcf file and assign it as a new object.
-
+## Convert to geno object:
+## You need to specify the output file. It will automatically subset the vcf file and assign it as a new object.
 project.snmf = NULL
 
 snps_fil_ldF_neutral <- Geno(snps_fil_ldF_neutral, output.file = "vcf/ipomoea_filtered_ld_hw_neutral.geno")
-
 VCFsummary(snps_fil_ldF)
 VCFsummary(snps_fil_ldF_neutral) # 115 individuals and 13167 SNPs.
 
-### Run SNMF (LEA) using different alpha
+## Run SNMF (LEA) using different alpha
 ## Create different folders for each alpha (1, 10, 100, 500) and copy the GENO file in each folder
-#project_snmf1n = snmf("adapt_var_mapping/Pop_structure/Alpha1n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 1, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
-#project_snmf2n = snmf("adapt_var_mapping/Pop_structure/Alpha10n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 10, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
-#project_snmf3n = snmf("adapt_var_mapping/Pop_structure/Alpha100n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 100, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
-#project_snmf4n = snmf("adapt_var_mapping/Pop_structure/Alpha500n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 500, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf1n = snmf("adapt_var_mapping/Pop_structure/Alpha1n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 1, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf2n = snmf("adapt_var_mapping/Pop_structure/Alpha10n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 10, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf3n = snmf("adapt_var_mapping/Pop_structure/Alpha100n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 100, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
+project_snmf4n = snmf("adapt_var_mapping/Pop_structure/Alpha500n/ipomoea_filtered_ld_hw_neutral.geno", K = 1:10, rep = 10, alpha = 500, entropy = T, ploidy = 2, project = "new", CPU=4) #CPU=4 uses 4 CPUs 
 
-##This allows you to save time because you do not need to run SNMF again!
-
+## This allows you to save time because you do not need to run SNMF again!
 project1n = load.snmfProject("adapt_var_mapping/Pop_structure/Alpha1n/ipomoea_filtered_ld_hw_neutral.snmfProject")
 project2n = load.snmfProject("adapt_var_mapping/Pop_structure/Alpha10n/ipomoea_filtered_ld_hw_neutral.snmfProject")
 project3n = load.snmfProject("adapt_var_mapping/Pop_structure/Alpha100n/ipomoea_filtered_ld_hw_neutral.snmfProject")
 project4n = load.snmfProject("adapt_var_mapping/Pop_structure/Alpha500n/ipomoea_filtered_ld_hw_neutral.snmfProject")
 
-# summary of the project
+## Summary of the project
 summary(project1n)
 summary(project2n)
 summary(project3n)
 summary(project4n)
 
-##Cross-Entropy plot
+## Cross-Entropy plot
 plot(project1n, lwd = 5, col = "red", pch=1)
 plot(project2n, lwd = 5, col = "red", pch=1)
 plot(project3n, lwd = 5, col = "red", pch=1)
 plot(project4n, lwd = 5, col = "red", pch=1)
 
-##Cross-Entropy plot with standard deviation error bars
-
+## Cross-Entropy plot with standard deviation error bars
 PlotK(project1n)
 PlotK(project2n)
 PlotK(project3n)
 PlotK(project4n)
 
-##Select optimal K value
+## Select optimal K value
 optimal_K = 1
 
 ## Bar plot of best K
@@ -405,16 +426,13 @@ LEA::barchart(project4n, K = optimal_K, run = best4n, border = NA, space = 0, co
          xlab = "Individuals", ylab = "Ancestry proportions", main = "Ancestry matrix") -> bp
 axis(1, at = 1:length(bp$order),labels = bp$order, las=1,cex.axis = .3)
 
-###Select best run (lowest cross-entropy)
+## Select best run (lowest cross-entropy)
 Best.run(nrep=10, optimalK=1, p1=project1n, p2=project2n, p3=project3n, p4=project4n)
 
-### Barplot
-
+## Barplot
 barplotK(Qfile=project4n, Pop= 1, Run_B = 1)
 
-
-#### Add population IDS to VCF file  #######################
-
+## Add population IDS to VCF file
 Qmat <- Q(project4n, run=1, K=1)
 
 ## Add Q-matrix and pop IDs to vcf file
@@ -429,64 +447,73 @@ write.table(cbind(snps_fil_ldF_neutral@meta, as.data.frame(Qmat)), file="adapt_v
 ## Save csv file with pop ID of individuals assessed using LEA
 write.csv(as.data.frame(snps_fil_ldF_neutral@meta)[,-(5)], file="adapt_var_mapping/Pop_structure/ipomoea__neutral_popsLEA.csv")
 
-#Here we will use other population clustering methods to assign individual
-#to different population. This method is DAPC
 
+#--------------------------------------------------------------------------------------
+#                  Population Assignment Analysis using DAPC 
+#--------------------------------------------------------------------------------------              
+              
+#Here we will use other population clustering methods to assign individual to different population. This method is DAPC
+
+## Load
 vcf <- read.vcfR("vcf/ipomoea_filtered_ld_hw_neutral.vcf", verbose = FALSE)
 
-#### TRANSFORMATION "VCF" TO "GENLIGHT"
+## TRANSFORMATION "VCF" TO "GENLIGHT"
 my_genind_pop <- vcfR2genlight(vcf) # It's used for alleles numbers counted by individuals
 my_genind_pop
 
 ## Identification of the clusters (We specify that we want to evaluate up to k = 10 groups (max.n.clust=40):)
-
 grp <- find.clusters(my_genind_pop, max.n.clust=10) # First run without informing these values (n.pca = 100 PCs  (All) and n.clust = 1 Cluster) 
 
-#the ’best’ BIC is often indicated by an below in the curve of BIC values as a function of k
-
+## The ’best’ BIC is often indicated by an below in the curve of BIC values as a function of k
+              
+## Plot the best K
 plot(grp$Kstat, type="o", xlab="Number of clusters (K)", ylab="BIC",
      col="blue", main="")
 
 ## Group (DPCA) of the first 10 individuals
-
 head(grp$grp, 10)
 
 ## Size of Groups (DPCA) 
-
 grp$size
 
-### DAPC
-
+## DAPC
 dapc_p <- dapc(my_genind_pop, grp$grp)
-
 dapc_p <- dapc(my_genind_pop, grp$grp, n.da=1, n.pca=100) #100 PCs and 1 discriminant functions saved
 summary(dapc_p)
 
-# Basic scatterplots (1)
-
+## Basic scatterplots (1)
 scatter(dapc_p, posi.da="bottomleft", bg="white", pch=19:20)
 
-# Plotted in a STRUCTURE-like 
-
+## Plotted in a STRUCTURE-like 
 compoplot(dapc_p)
 
-#Fst among Serra
+              
+#--------------------------------------------------------------------------------------
+#                        Estimate FST among Genetic Clusters 
+#--------------------------------------------------------------------------------------             
 
-library(dartR)
+## Define clusters as POP_ID from sMNF
+my_genind_pop@pop = as.factor(snps_fil_ldF_neutral@meta$PopID_smnf)
 
+## Define clusters as POP_ID from DAPC
+my_genind_pop@pop = as.factor(grp$grp)
+  
+## FST              
 gl.fst.pop(my_genind_pop, nboots = 100, percent = 95, nclusters = 1)
 
-### Genetic diversity - neutral loci
 
+#--------------------------------------------------------------------------------------
+#                     Estimate the Genetic Diversity per Population 
+#--------------------------------------------------------------------------------------
+
+## Genetic diversity with neutral loci
+
+## Load
 snps_fil_ldF_neutral <- vcfLink("vcf/ipomoea_filtered_ld_hw_neutral.vcf", overwriteID=T)
 VCFsummary(snps_fil_ldF_neutral)
 
-
-##Overall genetic diversity
-
+## Overall genetic diversity
 Overall <-GenDiv(snps_fil_ldF_neutral)
-
 write.table(Overall, file="adapt_var_mapping/Pop_structure/Diversity_Overall_neutral_ipomoea.txt", quote=F, sep="/t")
 
-
-
+## END
