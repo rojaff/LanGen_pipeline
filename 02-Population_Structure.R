@@ -187,7 +187,7 @@ ManPlot <- function(adj.p.values, candidates, title){
 ##5. INPUTS FOR THIS STEP:
 #A. THE FILE ".VCF" CLEANED AFTER FILTERING STEP 1.
 #B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
-#A. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
+#C. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
 
 
 #--------------------------------------------------------------------------------------
