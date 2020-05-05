@@ -1,13 +1,40 @@
-#This code was made to filter raw SNP dataset into neutral snps dataset and spns 
-#dataset that will be used in RDA and LFMM.
+###############################################################################
+####################### VALE INSTITUTE OF TECHNOLOGY ##########################
+############### LABORATORIO DE GENETICA DA PAISAGEM - GENPAI ##################
+###############################################################################
 
+
+###############################################################################
+##### COMBINING GENOTYPE, PHENOTYPE, AND ENVIRONMENTAL DATA TO DELINEATE ######
+######  SITE-AJUSTED PROVENANCE STRATEGIES FOR ECOLOGICAL RESTORATION #########
+###############################################################################
+### AUTHORED BY: CAROLINA S. CARVALHO, BRENNA R. FORESTER, SIMONE K. MITRE, ###
+########## RONNIE ALVES, VERA L. IMPERATRIZ-FONSECA, SILVIO J. RAMOS, #########
+##### LUCIANA C. RESENDE-MOREIRA, JOSÉ 0. SIQUEIRA, LEONARDO C. TREVELIN, #####
+############# CECILIO F. CALDEIRA, MARKUS GASTAUER, RODOLFO JAFFÉ #############
+###############################################################################
+
+
+###############################################################################
+############################### PRE-ANALYSIS ##################################
+###############################################################################
+
+
+##1. GOALS FOR THIS STEP:
+#A. FILTER RAW SNPS DATASET INTO NEUTRAL SNPS DATASET. 
+#B. CREATE A DATASET THAT WILL BE USED IN RDA AND LFMM ANALYSES.
+
+
+##2. REMOVE ANY OBJECT OR FUNCTION IN THE ENVIRONMENT:
 rm(list=ls())
 
-# loading packages and functions
 
+##3. INSTALL AND LOAD THE PACKAGES
 library(r2vcftools)
 library(LEA)
 
+
+##4. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
   Nid <- nrow(snps@meta)
   Nsnps <- length(snps@site_id)
@@ -25,16 +52,19 @@ Diference_Final <- function(All_SNPs, P1, P2, P3){
   return(Diference_Final)
 }
 
-# Here we will filter for biallelic spns, LD, HWE, etc
+
+##5. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
+#A. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
 
 
-##Load VCF file
-
-## Download VCF file "Icavalcantei.vcf" from figshare: https://doi.org/10.6084/m9.figshare.6100004.v1
-url <- "https://doi.org/10.6084/m9.figshare.6100004.v1"
-download.file(url, destfile = "Icavalcantei.vcf")
+#######################################################################################
+##################################### ANALYSES ########################################
+#######################################################################################
 
 
+#--------------------------------------------------------------------------------------
+#    Load the VCF file and verify the quality of data and filter by biallelic snps 
+#--------------------------------------------------------------------------------------
 snps_raw <-  vcfLink("vcf/Icavalcantei.vcf", overwriteID=T)
 snps_raw
 
@@ -66,7 +96,6 @@ Missing <- apply(GenotypeMatrix(snps_unind), 2, function(x) sum(x < 0)/length(x)
 summary(Missing) ## Max missing = 30
 hist(Missing)
 
-
 ### Look at depth, quality, HWE, HE, allele frequencies, and Pi
 site.depth <- Query(snps_unind, type="site-mean-depth")
 summary(site.depth$MEAN_DEPTH)
@@ -93,14 +122,15 @@ hist(HE$E.HOM)
 hist(HE$N_SITES) 
 hist(HE$F) ## Inbreeding coefficient
 
-###
-
 freq <- Query(snps_unind, type="freq2")
 hist(freq$X.FREQ.)
 hist(freq$X.FREQ.1)
 head(freq)
 
-######################### FILTER ADAPTIVE loci by depth, quality, maf, snps with missing data and removing high LD loci within same contig
+#--------------------------------------------------------------------------------------
+#    FILTER ADAPTIVE loci by depth, quality, maf, snps with missing data and
+#                 removing high LD loci within same contig
+#--------------------------------------------------------------------------------------
 
 snps_fil <- Filter(snps_unind, filterOptions(minQ=30, max.missing = 0.8, maf=0.05, min.meanDP=20, max.meanDP=200)) 
 VCFsummary(snps_fil) 
@@ -148,15 +178,15 @@ VCFsummary(snps_lowindmiss) ## 115 individuals and 17025 SNPs.
 #### Save filtered vcf
 Save(snps_lowindmiss, "vcf/ipomoea_filtered_within_ld_test2.vcf")
 
-
-########################## FILTER NEUTRAL loci by depth, quality, maf, missing data and hwe
+#--------------------------------------------------------------------------------------
+#           FILTER NEUTRAL loci by depth, quality, maf, missing data and hwe
+#--------------------------------------------------------------------------------------
 
 snps_fil_hwe <- Filter(snps_unind, filterOptions(minQ=30, max.missing = 0.8, maf=0.05, min.meanDP=20, max.meanDP=200, hwe=0.0001)) 
 VCFsummary(snps_fil_hwe)  ## 122 individuals and 15077 SNPs.
 
 ## If you have more than one population, use the code below. This code identifies SNPs deviating from HW equilibrium
 ## within each population, and then removes those SNPs that are in desequilibrium in all populations.
-
 
 ### LD within contigs
 #ld_within <- Linkage(snps_fil_hwe, type="geno-r2", linkageOptions(min.r2=0.0))
@@ -225,7 +255,9 @@ VCFsummary(snps_lowindmiss)
 #### Save filtered vcf
 Save(snps_lowindmiss, "vcf/ipomoea_filtered_ld_hwe_test2.vcf")
 
-
+#--------------------------------------------------------------------------------------
+#                       Dataset for RDA and LFMM analyses
+#--------------------------------------------------------------------------------------
 #Some analysis as RDA and LFMM2 does not allow missing data, so we used LFMM to
 #impute genetic missing data, based on the population that each individual
 #belongs, using the package LEA
@@ -254,3 +286,5 @@ impute(project.snmf, "vcf/ipomoea_filtered_within_ld.lfmm", method = 'mode', K =
 
 # Convert lfmm to geno and save
 lfmm2geno("vcf/ipomoea_filtered_within_ld.lfmm_imputed.lfmm", output.file = "vcf/ipomoea_filtered_within_ld_imputed.geno", force = TRUE)
+
+#END
