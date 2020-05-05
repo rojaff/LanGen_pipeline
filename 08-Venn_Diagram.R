@@ -48,6 +48,11 @@ length(lfmm_gea) ## 112
 BM1 <- rda_gea
 BM2 <- lfmm_gea
 
+
+#------------------------------------------------------------------------------
+#                                Create the Diagram 
+#------------------------------------------------------------------------------
+
 ## Creating a Venn Diagram with FOUR circles
 w1 <- venn.diagram(list(RDA=BM1,LFMM=BM2), lty = c("blank", "blank"),
                   fill = c("red", "light blue"),
