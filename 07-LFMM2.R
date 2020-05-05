@@ -1,27 +1,46 @@
-## This code was made to run LFMM analysis to find loci potentially under selection
+###############################################################################
+####################### VALE INSTITUTE OF TECHNOLOGY ##########################
+############### LABORATORIO DE GENETICA DA PAISAGEM - GENPAI ##################
+###############################################################################
 
+
+###############################################################################
+##### COMBINING GENOTYPE, PHENOTYPE, AND ENVIRONMENTAL DATA TO DELINEATE ######
+######  SITE-AJUSTED PROVENANCE STRATEGIES FOR ECOLOGICAL RESTORATION #########
+###############################################################################
+### AUTHORED BY: CAROLINA S. CARVALHO, BRENNA R. FORESTER, SIMONE K. MITRE, ###
+########## RONNIE ALVES, VERA L. IMPERATRIZ-FONSECA, SILVIO J. RAMOS, #########
+##### LUCIANA C. RESENDE-MOREIRA, JOSÉ 0. SIQUEIRA, LEONARDO C. TREVELIN, #####
+############# CECILIO F. CALDEIRA, MARKUS GASTAUER, RODOLFO JAFFÉ #############
+###############################################################################
+
+
+#------------------------------------------------------------------------------
+#                               PRE-ANALYSIS 
+#------------------------------------------------------------------------------
+
+##1. GOALS FOR THIS STEP:
+#A. PERFORM LFMM ANALYSIS TO IDENTIFY LOCI UNDER SELECTION (OUTLIER DETECTION)
+
+##2. REMOVE ANY OBJECT OR FUNCTION IN THE ENVIRONMENT:
 rm(list=ls())
 
-# Load packages -----------------------------------------------------------
-
+##3. INSTALL AND LOAD THE PACKAGES
 library(r2vcftools)
 library(LEA)
-#devtools::install_github("bcm-uga/lfmm")
 library(lfmm)
 library(usdm)
 library(vegan)
 library(seqinr)
-#if(!requireNamespace("BiocManager", quietly = T))
- # install.packages("BiocManager")
-#BiocManager::install("qvalue")
 library(qvalue)
 
+##4. INPUTS FOR THIS STEP:
+#A. THE FILE ".VCF" CLEANED AFTER FILTERING STEP 1.
+#B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
+#C. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
+#D. ".CSV" FILE WITH GEOGRAPHICAL INFORMATION FOR THE GENETIC SAMPLES. YOU CAN DOWNLOAD IT THIS EXAMPLE IN https://www.frontiersin.org/articles/10.3389/fpls.2018.00532/full#supplementary-material
 
-# Load functions ----------------------------------------------------------
-
-##Load functions that will be used throughout the code
-
-### Summary stats
+##5. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
   Nid <- nrow(snps@meta)
   Nsnps <- length(snps@site_id)
@@ -29,18 +48,15 @@ VCFsummary <- function(snps){
 }
 
 
-# Load snps and environmental dataset -------------------------------------
-
-##First of all, load imputed SNP and the environmetal datasets
-
-### Load snps data set to take the snps and individuals ID
-
+#------------------------------------------------------------------------------
+#                            Load Datasets 
+#------------------------------------------------------------------------------
+## Load snps data set to take the snps and individuals ID
 snps <-  vcfLink("vcf/ipomoea_filtered_within_ld_test2.vcf", overwriteID=T)
 snps@meta
 VCFsummary(snps) ## 115 individuals and 17025 SNPs.
 
-## read geno file
-
+## Read geno file
 ipomoea_geno <- read.geno("vcf/ipomoea_filtered_within_ld_imputed.geno")
 ipomoea_geno[1:10,1:10]
 colnames(ipomoea_geno) <- snps@site_id
@@ -50,52 +66,49 @@ dim(ipomoea_geno)
 ## Number of missing data
 sum(is.na(ipomoea_geno))
 
-### load environmental data set
-
+## Load environmental data set
 dados_env <- read.table("adapt_var_mapping/Dados_ambientais/climatic_data_ipomoea.txt", head=T)
 head(dados_env)
 str(dados_env)
 
-## check if individuals in genotype and environmental dataset are in the same order
-
+## Check if individuals in genotype and environmental dataset are in the same order
 data.frame(rownames(ipomoea_geno),as.character(dados_env$ID))
 
-## check the correlation among enviromental variables
-
+## Check the correlation among enviromental variables
 vif(dados_env[,-c(1:3)])
 
 ## scale environmental dataset
-
 pred_scale <- scale(dados_env[,-c(1:3)]) ## remove information of lat, long, location, etc
 rownames(pred_scale) <-dados_env[,1]
 head(pred_scale)
 
-##Now we will carry out the lfmm using the package lfmm
 
-# Lfmm analysis -----------------------------------------------------------
-
+#------------------------------------------------------------------------------
+#                            LFMM Analysis 
+#------------------------------------------------------------------------------
+## Carry out the lfmm using the package lfmm
 mod.lfmm <- lfmm_ridge(Y = ipomoea_geno, 
                        X = pred_scale, 
                        K = 1)  ## K is the number of populations
 
-## performs association testing using the fitted model:
-
+## Performs association testing using the fitted model:
 pv <- lfmm_test(Y = ipomoea_geno, 
                 X = pred_scale, 
                 lfmm = mod.lfmm,
                 calibrate="gif")
 
 
-## estimate adjusted p-values based on gif
-
+#------------------------------------------------------------------------------
+#                             Outlier Detection 
+#------------------------------------------------------------------------------
+## Estimate adjusted p-values based on gif
 pv$gif# the GIFs for the predictors
 
 # Reminder:
 # GIF of 1=well calibrated, >1=liberal (too many small p-values), <1=conservative (too few small p-values)
 # Note: GIFs > 2 indicate poor test calibration; try increasing K...and be skeptical!
 
-## estimate adjusted p-values
-
+## Estimate adjusted p-values
 pvalues <- pv$pvalue 
 zs <- pv$score
 
@@ -133,8 +146,7 @@ snps_fil_lfmm_candidate2@site_id ##These are the candidate SNPs associated with 
 snps_fil_lfmm_candidate3 <- Subset(snps, sites=qv_adj.PC3)
 snps_fil_lfmm_candidate3@site_id ##These are the candidate SNPs associated with PC3.
 
-# remove duplicated snps names (some SNPs might be associated with more than on PC)
-
+## Remove duplicated snps names (some SNPs might be associated with more than on PC)
 snps_candidate <- unique(c(snps_fil_lfmm_candidate1@site_id,snps_fil_lfmm_candidate2@site_id,
                            snps_fil_lfmm_candidate3@site_id)) 
 
@@ -145,7 +157,11 @@ snps_fil_lfmm_candidate_all@site_id ##These are all the candidate SNPs. From her
 #### Save filtered vcf
 Save(snps_fil_lfmm_candidate_all, "adapt_var_mapping/EAA_LFMM/snps_candidate_lfmm_ipomoea.vcf")
 
-#### Retrieve chromosome IDS
+
+#------------------------------------------------------------------------------
+#                     Save Candidates Loci and their Fasta
+#------------------------------------------------------------------------------  
+## Retrieve chromosome IDS
 CANDIDATES_d1 <- Chrom(snps_fil_lfmm_candidate1)
 CH1 <- unique(CANDIDATES_d1[, 1])
 
@@ -169,10 +185,10 @@ SEQ3 <- fastafile[names(fastafile) %in% CH3]
 
 total <- fastafile[names(fastafile) %in% contigs]
 
-### Save new fasta files containing candidate sequences
-
+## Save new fasta files containing candidate sequences
 write.fasta(sequences = SEQ1, names = names(SEQ1), nbchar = 150, file.out = "adapt_var_mapping/EAA_LFMM/SEQ1_lfmm_ipomoea.fasta")
 write.fasta(sequences = SEQ2, names = names(SEQ2), nbchar = 150, file.out = "adapt_var_mapping/EAA_LFMM/SEQ2_lfmm_ipomoea.fasta")
 write.fasta(sequences = SEQ3, names = names(SEQ3), nbchar = 150, file.out = "adapt_var_mapping/EAA_LFMM/SEQ3_lfmm_ipomoea.fasta")
 write.fasta(sequences = total, names = names(total), nbchar = 150, file.out = "adapt_var_mapping/EAA_LFMM/SEQ_total_lfmm_ipomoea.fasta")
 
+#END
