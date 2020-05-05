@@ -1,29 +1,58 @@
-#This code was made to evaluate the environmental variables
-#that we will be used to select loci under selection for Ipomoea cavalcantei
+###############################################################################
+####################### VALE INSTITUTE OF TECHNOLOGY ##########################
+############### LABORATORIO DE GENETICA DA PAISAGEM - GENPAI ##################
+###############################################################################
 
-# Loading packages
 
-require(missMDA)
-require(ggfortify)
+###############################################################################
+##### COMBINING GENOTYPE, PHENOTYPE, AND ENVIRONMENTAL DATA TO DELINEATE ######
+######  SITE-AJUSTED PROVENANCE STRATEGIES FOR ECOLOGICAL RESTORATION #########
+###############################################################################
+### AUTHORED BY: CAROLINA S. CARVALHO, BRENNA R. FORESTER, SIMONE K. MITRE, ###
+########## RONNIE ALVES, VERA L. IMPERATRIZ-FONSECA, SILVIO J. RAMOS, #########
+##### LUCIANA C. RESENDE-MOREIRA, JOSÉ 0. SIQUEIRA, LEONARDO C. TREVELIN, #####
+############# CECILIO F. CALDEIRA, MARKUS GASTAUER, RODOLFO JAFFÉ #############
+###############################################################################
+
+
+#------------------------------------------------------------------------------
+#                               PRE-ANALYSIS 
+#------------------------------------------------------------------------------
+
+##1. GOALS FOR THIS STEP:
+#A. EVALUATE THE ENVIRONMENTAL VATIABLES THAT WILL BE USED TO SELECT LOCI UNDER SELECTION 
+
+##2. REMOVE ANY OBJECT OR FUNCTION IN THE ENVIRONMENT:
+rm(list=ls())
+
+##3. INSTALL AND LOAD THE PACKAGES
+library(missMDA)
+library(ggfortify)
 library(raster)
 library(rgdal)
 library(sp)
 library(rgeos)
 
+##4. INPUTS FOR THIS STEP:
+#A. THE FILE ".VCF" CLEANED AFTER FILTERING STEP 1.
+#B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
+#C. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
+#D. ".CSV" FILE WITH GEOGRAPHICAL INFORMATION FOR THE GENETIC SAMPLES. YOU CAN DOWNLOAD IT THIS EXAMPLE IN https://www.frontiersin.org/articles/10.3389/fpls.2018.00532/full#supplementary-material
 
-#################################################################################
-### Load coords of samples with genotype data
 
-## Download coordinate data from the repository: coords_genotype_icav_UTM.txt
-## Remove samples with missing data
-
+#------------------------------------------------------------------------------
+#                 LOAD COORDINATES FOR SAMPLES WITH GENOTYPE DATA 
+#------------------------------------------------------------------------------
+## Load
 coords <- read.table("data_prep/coords_genotype_icav_UTM", sep="\t", h=T)
 head(coords)
 str(coords)
 
+## Remove samples with missing data
 coords_gen <- coords[coords$ID!="I13" & coords$ID!="I41" & coords$ID!="I48" & 
                        coords$ID!="I52" & coords$ID!="I101" & coords$ID!="I110" & coords$ID!="I116",]
 
+## Verify
 str(coords_gen) ## 115 obs
 
 ## Transform into Spatial Points Dataframe
@@ -32,16 +61,15 @@ nrow(coords_gen) #122 individuals
 class(coords_gen) #"SpatialPointsDataFrame"
 projection(coords_gen) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=m")
 
+## Plot points
 plot(coords_gen, axes=TRUE)
 
 
-#Now, we selected the climatic variables from WorlClim dataset. 
-#For that, we carried out a PCA to select the variables that are more correlated 
-#to the first three axes. Then we built a climatic dataframe that will be used 
-#in the subsequent analysis.
+#------------------------------------------------------------------------------
+# SELECT THE MORE IMPORTANT BIOCLIMATIC VARIABLES FOR THE DATASET USING A PCA
+#------------------------------------------------------------------------------
 
-
-### WorldClim data
+## Download WorldClim data
 Mlong <- mean(coords_gen@coords[,1])
 Mlat <- mean(coords_gen@coords[,2])
 Bioclimate = getData('worldclim', var='bio', res=0.5, path = "adapt_var_mapping/Dados_ambientais", lon=Mlong, lat=Mlat) # Para baixar as camadas com alta resolução precisa definir as coordenadas: getData('worldclim', var='bio', res=0.5, lon=5, lat=45)
@@ -67,8 +95,7 @@ Bioclimate = getData('worldclim', var='bio', res=0.5, path = "adapt_var_mapping/
 #BIO18 = Precipitation of Warmest Quarter
 #BIO19 = Precipitation of Coldest Quarter
 
-
-#### Build raster stack with all layers
+## Build raster stack with all layers
 getwd()
 dir <- "adapt_var_mapping/Dados_ambientais/wc0.5/" # indicate the path to bioclimatic data
 current.list <- list.files(path=dir, pattern =".bil", full.names=TRUE)
@@ -76,15 +103,14 @@ Bioclimate <- stack(current.list)
 names(Bioclimate)
 projection(Bioclimate) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=m"
 
-
-##### Extract data
+## Extract data
 Idata <- extract(Bioclimate, coords_gen)
 Idata <- as.data.frame(Idata)
 class(Idata)
 head(Idata)
 summary(Idata)
 
-######### Run PCA and extract the first components
+## Run PCA and extract the first components
 Ipc <- princomp(scale(Idata))
 plot(Ipc)
 autoplot(Ipc, loadings=T, loadings.label =T)
@@ -94,7 +120,7 @@ Idata$F1 <- Ipc$scores[,1]
 Idata$F2 <- Ipc$scores[,2]
 Idata$F3 <- Ipc$scores[,3]
 
-##### Identify the most relevant environemntal variables
+### Identify the most relevant environemntal variables
 Icor_clima <- as.data.frame(cor(Idata))
 Icor_clima
 
@@ -106,8 +132,7 @@ row.names(Icor_clima[Nf1, ])
 row.names(Icor_clima[Nf2, ]) 
 row.names(Icor_clima[Nf3, ]) 
 
-#Saving the climatic variables for Ipomoea
-
+## Saving the climatic variables for Ipomoea
 climatic_data <- coords_gen@data[,c(1:3)]
 climatic_data$bio06 <- Idata$bio6_34      ## here, use the name of your selected variables 
 climatic_data$bio18 <- Idata$bio18_34
@@ -117,3 +142,4 @@ str(climatic_data)
 
 write.table(climatic_data, "adapt_var_mapping/Dados_ambientais/climatic_data_ipomoea.txt")
 
+## END
