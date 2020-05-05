@@ -51,7 +51,7 @@ VCFsummary <- function(snps){
 
 
 #------------------------------------------------------------------------------
-#                         Load Imputed SNPs Datasets 
+#                            Load SNPs Dataset 
 #------------------------------------------------------------------------------
 ## This script was developed by Brenna Forester and adapted to our data
 
