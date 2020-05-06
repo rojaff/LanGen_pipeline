@@ -18,10 +18,9 @@
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
 #------------------------------------------------------------------------------
-
 ##1. GOALS FOR THIS STEP:
 #A. ESTIMATE POPULATION GENETIC DIVERSITY
-#B. ESTIMATE POPULATION STRUCTURE CARRING OUT CLUSTERING ANALYSES
+#B. ESTIMATE POPULATION STRUCTURE
 
 ##2. REMOVE ANY OBJECT OR FUNCTION IN THE ENVIRONMENT:
 rm(list=ls())
@@ -36,7 +35,12 @@ library(vcfR)
 library(SNPRelate)
 library(dartR)
 
-##4. LOAD FUNCTIONS TO BE USED ON THIS STEP.
+##4. INPUTS FOR THIS STEP:
+#A. THE FILE ".VCF" AFTER FILTERING STEP 1.
+#B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
+#C. KEEP VCF FILES IN A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY.
+
+##5. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
   Nid <- nrow(snps@meta)
   Nsnps <- length(snps@site_id)
@@ -182,12 +186,6 @@ ManPlot <- function(adj.p.values, candidates, title){
   plot(-log10(adj.p.values), main=title, xlab = "Locus", cex = .7, col = "grey")
   points(candidates, -log10(adj.p.values)[candidates], pch = 19, cex = .7, col = "red")
 }
-
-
-##5. INPUTS FOR THIS STEP:
-#A. THE FILE ".VCF" CLEANED AFTER FILTERING STEP 1.
-#B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
-#C. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
 
 
 #--------------------------------------------------------------------------------------
