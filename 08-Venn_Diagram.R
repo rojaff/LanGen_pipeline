@@ -18,9 +18,8 @@
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
 #------------------------------------------------------------------------------
-
 ##1. GOALS FOR THIS STEP:
-#A. PROCESSED DATA AND DIAGRAMS FOR THE NUMBER ADAPTATIVE LOCI
+#A. PROCESSING DATA AND CREATE DIAGRAMS FOR THE NUMBER ADAPTATIVE LOCI
 
 ##2. REMOVE ANY OBJECT OR FUNCTION IN THE ENVIRONMENT:
 rm(list=ls())
