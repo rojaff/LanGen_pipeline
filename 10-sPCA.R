@@ -18,7 +18,6 @@
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
 #------------------------------------------------------------------------------
-
 ##1. GOALS FOR THIS STEP:
 #A. MAPPING ADAPTATIVE GENETIC VARIATION USING SPATIAL PRINCIPAL COMPONENTS ANALYSIS (sPCA)
 
@@ -32,10 +31,10 @@ library(r2vcftools)
 library(usdm)
 
 ##4. INPUTS FOR THIS STEP:
-#A. RESULTS FROM GEA ANALYSES:
-        #A1. CANDIDATE LOCI SELECTED BY RDA (STEP 6)
-        #A2. CANDIDATE LOCI SELECTED BY LFMM2 (STEP 7)
-        #A3. COMBINED RDA AND LFMM2 LOCI (STEP 9)
+#A. THE FILE ".VCF" FOR ADAPATATION ANALYSES CREATED IN FILTERING STEP 1, NAMED AS "_filtered_within_ld_test2.vcf".
+#B. GENOTYPE FILE WITHOUT MISSING DATA CREATED IN FILTERING STEP 1, NAMED AS "_filtered_within_ld_imputed.geno".
+#C. GEA RESULTS USING RDA AND LFMM ANALYSES FROM STEPS 6 AND 7.
+#D. ENVIRONMENTAL INFORMATION FILTERED AND SELECTED IN STEP 3.
 
 ##5. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
