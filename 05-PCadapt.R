@@ -18,7 +18,6 @@
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
 #------------------------------------------------------------------------------
-
 ##1. GOALS FOR THIS STEP:
 #A. PERFORM PCadapt ANALYSIS TO IDENTIFY SNPs UNDER SELECTION (OUTLIER DETECTION) 
 
@@ -32,10 +31,9 @@ library(psych)
 library(seqinr)
 
 ##4. INPUTS FOR THIS STEP:
-#A. THE FILE ".VCF" CLEANED AFTER FILTERING STEP 1.
-#B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
-#C. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
-#D. ".CSV" FILE WITH GEOGRAPHICAL INFORMATION FOR THE GENETIC SAMPLES. YOU CAN DOWNLOAD IT THIS EXAMPLE IN https://www.frontiersin.org/articles/10.3389/fpls.2018.00532/full#supplementary-material
+#A. THE FILE ".VCF" FOR ADAPATATION ANALYSES CREATED IN FILTERING STEP 1, NAMED AS "_filtered_within_ld_test2.vcf".
+#B. GENOTYPE FILE WITHOUT MISSING DATA CREATED IN FILTERING STEP 1, NAMED AS "_filtered_within_ld_imputed.geno".
+#C. REFERENCE SEQUENCES IN FASTA FORMAT. YOU CAN DOWNLOAD AS EXAMPLE "Icavalcantei.fasta" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
 
 ##5. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
@@ -62,7 +60,7 @@ VCFsummary <- function(snps){
 
 
 #------------------------------------------------------------------------------
-#                   Load Imputed SNPs and Environmental Datasets 
+#                     Load Genotype and Environmental Datasets 
 #------------------------------------------------------------------------------
 ## Load snps data set to take the snps and individuals ID
 snps <-  vcfLink("vcf/ipomoea_filtered_within_ld_test2.vcf", overwriteID=T)
