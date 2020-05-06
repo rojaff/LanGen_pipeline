@@ -18,7 +18,6 @@
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
 #------------------------------------------------------------------------------
-
 ##1. GOALS FOR THIS STEP:
 #A. PERFORM FINE-SCALE SPATIAL GENETIC STRUCTURE WITH LOCAL POLYNOMIAL FITTING (LOESS)
 
@@ -35,10 +34,10 @@ library(gridExtra)
 library(dplyr)
 
 ##4. INPUTS FOR THIS STEP:
-#A. THE FILE ".VCF" CLEANED AFTER FILTERING STEP 1.
-#B. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
-#C. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
-#D. ".CSV" FILE WITH GEOGRAPHICAL INFORMATION FOR THE GENETIC SAMPLES. YOU CAN DOWNLOAD IT THIS EXAMPLE IN https://www.frontiersin.org/articles/10.3389/fpls.2018.00532/full#supplementary-material
+#A. THE FILE ".VCF" AFTER FILTERING STEP 1.
+#B. ".CSV" FILE WITH GEOGRAPHICAL INFORMATION FOR THE GENETIC SAMPLES. YOU CAN DOWNLOAD IT THIS EXAMPLE IN https://www.frontiersin.org/articles/10.3389/fpls.2018.00532/full#supplementary-material
+#C. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
+#D. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
 
 ##5. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 mDistoLoess <- function(mat1,mat2,nperm=999){
@@ -64,7 +63,6 @@ mDistoLoess <- function(mat1,mat2,nperm=999){
 #------------------------------------------------------------------------------
 #                              Genetic Distance 
 #------------------------------------------------------------------------------
-
 ## Load 
 snps_neutral <- vcfLink("vcf/ipomoea_filtered_ld_hw_neutral.vcf", overwriteID=T)
 
