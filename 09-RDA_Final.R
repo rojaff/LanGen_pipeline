@@ -18,7 +18,6 @@
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
 #------------------------------------------------------------------------------
-
 ##1. GOALS FOR THIS STEP:
 #A. PERFORM VISUAL ASSESSMENT OF GENOTYPE-ENVIRONMENT ASSOCIATIONS USING REDUNDANCY ANALYSES (RDA) ON THE CANDIDATE LOCI
 
@@ -39,7 +38,11 @@ library(seqinr)
 library(robust)  
 
 ##4. INPUTS FOR THIS STEP:
-#A. GEA RESULTS USING RDA AND LFMM ANALYSES FROM STEPS 6 AND 7.
+#A. THE FILE ".VCF" FOR ADAPATATION ANALYSES CREATED IN FILTERING STEP 1, NAMED AS "_filtered_within_ld_test2.vcf".
+#B. GENOTYPE FILE WITHOUT MISSING DATA CREATED IN FILTERING STEP 1, NAMED AS "_filtered_within_ld_imputed.geno".
+#C. GEA RESULTS USING RDA AND LFMM ANALYSES FROM STEPS 6 AND 7.
+#D. ENVIRONMENTAL INFORMATION FILTERED AND SELECTED IN STEP 3.
+#E. POPULATIONS ID PER INDIVIDUAL FROM STEP 2. 
 
 ##5. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
@@ -50,7 +53,7 @@ VCFsummary <- function(snps){
 
 
 #------------------------------------------------------------------------------
-#                               Load GEA Results 
+#                        Load Genotypes Files and GEA Results 
 #------------------------------------------------------------------------------
 #Load snps data set to take the snps and individuals ID
 snps <-  vcfLink("vcf/ipomoea_filtered_within_ld_test2.vcf", overwriteID=T)
