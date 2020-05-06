@@ -18,23 +18,21 @@
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
 #------------------------------------------------------------------------------
-
-
 ##1. GOALS FOR THIS STEP:
 #A. FILTER RAW SNPS DATASET INTO NEUTRAL SNPS DATASET. 
 #B. CREATE A DATASET THAT WILL BE USED IN RDA AND LFMM ANALYSES.
 
-
 ##2. REMOVE ANY OBJECT OR FUNCTION IN THE ENVIRONMENT:
 rm(list=ls())
-
 
 ##3. INSTALL AND LOAD THE PACKAGES
 library(r2vcftools)
 library(LEA)
 
+##4. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
+#A. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
 
-##4. LOAD FUNCTIONS TO BE USED ON THIS STEP.
+##5. LOAD FUNCTIONS TO BE USED ON THIS STEP.
 VCFsummary <- function(snps){
   Nid <- nrow(snps@meta)
   Nsnps <- length(snps@site_id)
@@ -53,13 +51,10 @@ Diference_Final <- function(All_SNPs, P1, P2, P3){
 }
 
 
-##5. DOWNLOAD A VCF FILE AS EXAMPLE "Icavalcantei.vcf" FROM FIGSHARE: https://doi.org/10.6084/m9.figshare.6100004.v1
-#A. CREATE A FOLDER NAMED "vcf" IN YOUR WORKING DIRECTORY AND SAVE THE .vcf FILE THERE.
-
-
 #--------------------------------------------------------------------------------------
 #    Load the VCF file and verify the quality of data and filter by biallelic snps 
 #--------------------------------------------------------------------------------------
+## Load vcf file
 snps_raw <-  vcfLink("vcf/Icavalcantei.vcf", overwriteID=T)
 snps_raw
 
