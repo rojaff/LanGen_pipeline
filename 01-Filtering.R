@@ -1,5 +1,5 @@
 
-### AUTHORED BY: Carolina S. Carvalho, Jeronymo Dalapicolla, Luciana C. Resende-Moreira, Jamille C. Veiga & Rodolfo Jaffé ###
+### Script prepared by Carolina S. Carvalho, Jeronymo Dalapicolla, Luciana C. Resende-Moreira, Jamille C. Veiga, and Rodolfo Jaffé ###
 
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
