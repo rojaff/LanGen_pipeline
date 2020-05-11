@@ -1,19 +1,4 @@
-###############################################################################
-####################### VALE INSTITUTE OF TECHNOLOGY ##########################
-############### LABORATORIO DE GENETICA DA PAISAGEM - GENPAI ##################
-###############################################################################
-
-
-###############################################################################
-##### COMBINING GENOTYPE, PHENOTYPE, AND ENVIRONMENTAL DATA TO DELINEATE ######
-######  SITE-AJUSTED PROVENANCE STRATEGIES FOR ECOLOGICAL RESTORATION #########
-###############################################################################
-### AUTHORED BY: CAROLINA S. CARVALHO, BRENNA R. FORESTER, SIMONE K. MITRE, ###
-########## RONNIE ALVES, VERA L. IMPERATRIZ-FONSECA, SILVIO J. RAMOS, #########
-##### LUCIANA C. RESENDE-MOREIRA, JOSÉ 0. SIQUEIRA, LEONARDO C. TREVELIN, #####
-############# CECILIO F. CALDEIRA, MARKUS GASTAUER, RODOLFO JAFFÉ #############
-###############################################################################
-
+### Script prepared by Carolina S. Carvalho, Jeronymo Dalapicolla, Luciana C. Resende-Moreira, Jamille C. Veiga, and Rodolfo Jaffé ###
 
 #------------------------------------------------------------------------------
 #                               PRE-ANALYSIS 
