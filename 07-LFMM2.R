@@ -11,6 +11,18 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+
+# devtools::install_github("bcm-uga/LEA", force=T)
+# devtools::install_github("nspope/r2vcftools", force=T)
+# devtools::install_github("bcm-uga/lfmm", force=T)
+#devtools::install_github("cran/usdm", force=T)
+# devtools::install_github("vegandevs/vegan", force=T)
+# devtools::install_github("cran/seqinr", force=T)
+#if (!# requireNamespace("BiocManager", # quietly = TRUE))
+#    install.packages("BiocManager")
+# BiocManager::install("qvalue")
+
+
 library(r2vcftools)
 library(LEA)
 library(lfmm)
