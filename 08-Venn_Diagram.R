@@ -10,6 +10,11 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+
+# devtools::install_github("cran/VennDiagram", force=T)
+# devtools::install_github("tidyverse/tidyverse", force=T)
+# devtools::install_github("cran/seqinr", force=T)
+
 library(VennDiagram)
 library(tidyverse)
 library(seqinr)
