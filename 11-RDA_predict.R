@@ -10,6 +10,16 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+
+# devtools::install_github("bcm-uga/LEA", force=T)
+# devtools::install_github("nspope/r2vcftools", force=T)
+# devtools::install_github("cran/usdm", force=T)
+# devtools::install_github("vegandevs/vegan", force=T)
+# devtools::install_github("tidyverse/ggplot2 , force=T)
+# devtools::install_github("tidyverse/dplyr", force=T)
+# devtools::install_github("kassambara/factoextra", force=T)
+# devtools::install_github("cran/NbClust", force=T)
+
 library(r2vcftools)
 library(vegan)    
 library(usdm)
