@@ -10,6 +10,13 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+
+# devtools::install_github("nspope/r2vcftools", force=T)
+# devtools::install_github("cran/usdm", force=T)
+# devtools::install_github("thibautjombart/adegenet", force=T)
+# devtools::install_github("cran/usdm", force=T)
+# install.packages("splancs")
+
 library(adegenet)
 library(splancs)
 library(r2vcftools)
