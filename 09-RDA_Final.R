@@ -10,6 +10,19 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+
+# devtools::install_github("bcm-uga/LEA", force=T)
+# devtools::install_github("nspope/r2vcftools", force=T)
+#devtools::install_github("cran/usdm", force=T)
+# devtools::install_github("vegandevs/vegan", force=T)
+# devtools::install_github("cran/psych", force=T)
+# devtools::install_github("cran/seqinr", force=T)
+# devtools::install_github("cran/robust", force=T)
+# devtools::install_github("sdray/ade4", force=T)
+# devtools::install_github("sdray/adespatial", force=T)
+# devtools::install_github("r-spatial/spdep", force=T)
+#install.packages("spacemakeR", #repos="http://R-Forge.R-#project.org")
+
 library(LEA)
 library(r2vcftools)
 library(vegan)    
