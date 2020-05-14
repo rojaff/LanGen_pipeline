@@ -10,6 +10,14 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+
+# devtools::install_github("cran/missMDA", force=T)
+# devtools::install_github(" sinhrks/ggfortify", force=T)
+# devtools::install_github("cran/raster", force=T)
+# devtools::install_github("cran/rgdal", force=T)
+# devtools::install_github("r-spatial/sf", force=T)
+# devtools::install_github("cran/rgeos", force=T)
+
 library(missMDA)
 library(ggfortify)
 library(raster)
