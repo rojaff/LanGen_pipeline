@@ -12,6 +12,7 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+
 # devtools::install_github("bcm-uga/LEA")
 # devtools::install_github("nspope/r2vcftools", force=T)
 # devtools::install_github("bcm-uga/tess3r", force=T)
@@ -21,6 +22,7 @@ rm(list=ls())
 # devtools::install_github("zhengxwen/gdsfmt")
 # devtools::install_github("zhengxwen/SNPRelate")
 # devtools::install_github("cran/dartR", force=T)
+
 library(r2vcftools)
 library(LEA)
 library(tess3r) 
