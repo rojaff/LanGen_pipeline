@@ -10,6 +10,14 @@
 rm(list=ls())
 
 ##3. INSTALL AND LOAD THE PACKAGES
+# devtools::install_github("tidyverse/ggplot2 , force=T)
+# devtools::install_github("nspope/r2vcftools", force=T)
+# devtools::install_github("cran/raster", force=T)
+# devtools::install_github("cran/rgdal", force=T)
+# devtools::install_github("cran/geosphere", force=T)
+# devtools::install_github("cran/gridExtra", force=T)
+# devtools::install_github("tidyverse/dplyr", force=T)
+
 library(ggplot2)
 library(r2vcftools)
 library(geosphere)
