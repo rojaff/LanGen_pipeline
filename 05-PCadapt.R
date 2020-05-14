@@ -14,7 +14,7 @@ rm(list=ls())
 # devtools::install_github("bcm-uga/pcadapt", force=T)
 # devtools::install_github("cran/psych", force=T)
 # devtools::install_github("cran/seqinr", force=T)
-#if (!requireNamespace("BiocManager", quietly = TRUE))
+# if (!requireNamespace("BiocManager", quietly = TRUE))
 #    install.packages("BiocManager")
 # BiocManager::install("qvalue")
 
